@@ -1,4 +1,10 @@
 package tracker;
+
+import model.Subtask;
+import model.Epic;
+import model.Status;
+import manager.InMemoryTaskManager;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,10 +23,18 @@ public class SubtaskTest {
 
     @Test
     void subtaskCannotBeItsOwnEpic() {
-        Subtask sub = new Subtask("Sub", "Desc", Status.NEW, 1);
-        sub.setId(1);
+        InMemoryTaskManager manager = new InMemoryTaskManager();
 
-        assertNotEquals(sub.getId(), sub.getEpicId(),
-                "Подзадача не может быть своим же эпиком");
+        Epic epic = new Epic("Epic", "Desc");
+        int epicId = manager.addEpic(epic);
+
+
+        Subtask sub = new Subtask("Sub", "Desc", Status.NEW, epicId);
+        sub.setId(epicId);
+
+        int result = manager.addSubtask(sub);
+
+        assertEquals(-1, result,
+                "Подзадача не должна добавляться, если её epicId совпадает с её id");
     }
 }

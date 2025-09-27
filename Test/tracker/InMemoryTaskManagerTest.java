@@ -1,4 +1,8 @@
 package tracker;
+
+import manager.InMemoryTaskManager;
+import model.Task;
+import model.Status;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;

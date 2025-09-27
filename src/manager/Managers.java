@@ -1,7 +1,8 @@
-package tracker;
+package manager;
 
 public class Managers {
-    public static TaskManager getDefault() {
+
+    public static TaskManager getDefaultTaskManager() {
         return new InMemoryTaskManager();
     }
 

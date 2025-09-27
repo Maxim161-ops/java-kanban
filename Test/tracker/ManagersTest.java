@@ -1,4 +1,8 @@
 package tracker;
+
+import manager.TaskManager;
+import manager.HistoryManager;
+import manager.Managers;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,7 +10,7 @@ public class ManagersTest {
 
     @Test
     void getDefaultReturnsTaskManager() {
-        TaskManager manager = Managers.getDefault();
+        TaskManager manager = Managers.getDefaultTaskManager();
         assertNotNull(manager, "Менеджер задач должен быть инициализирован");
     }
 

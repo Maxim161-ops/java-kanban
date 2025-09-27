@@ -1,6 +1,9 @@
-package tracker;
+package manager;
 
-import java.util.*;
+import model.Task;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int MAX_HISTORY_SIZE = 10;
@@ -9,11 +12,10 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (task == null) return;
-        history.remove(task); // если уже была — удалим
-        if (history.size() == MAX_HISTORY_SIZE) {
+        history.add(task);
+        if (history.size() > MAX_HISTORY_SIZE) {
             history.removeFirst();
         }
-        history.add(task);
     }
 
     @Override

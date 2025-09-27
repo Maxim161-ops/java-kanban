@@ -1,8 +1,13 @@
-package tracker;
+import manager.TaskManager;
+import model.Task;
+import model.Epic;
+import model.Subtask;
+import model.Status;
+import manager.Managers;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault();
+        TaskManager manager = Managers.getDefaultTaskManager();
 
         Task task1 = new Task("Переезд", "Собрать вещи и перевезти", Status.NEW);
         Task task2 = new Task("Учёба", "Сделать проект по Java", Status.NEW);
@@ -26,24 +31,20 @@ public class Main {
 
     private static void printAllTasks(TaskManager manager) {
         System.out.println("Задачи:");
-        for (Task task : manager.getAllTasks()) {
-            System.out.println(task);
-        }
+        for (Task task : manager.getAllTasks()) System.out.println(task);
+
         System.out.println("Эпики:");
         for (Epic epic : manager.getAllEpics()) {
             System.out.println(epic);
-            for (Task sub : manager.getEpicSubtasks(epic.getId())) {
+            for (Subtask sub : manager.getEpicSubtasks(epic.getId())) {
                 System.out.println("--> " + sub);
             }
         }
+
         System.out.println("Подзадачи:");
-        for (Subtask subtask : manager.getAllSubtasks()) {
-            System.out.println(subtask);
-        }
+        for (Subtask subtask : manager.getAllSubtasks()) System.out.println(subtask);
 
         System.out.println("История:");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
-        }
+        for (Task task : manager.getHistory()) System.out.println(task);
     }
 }
