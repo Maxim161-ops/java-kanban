@@ -1,5 +1,5 @@
 package tracker;
-
+import manager.InMemoryHistoryManager;
 import model.Status;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,7 +96,7 @@ class InMemoryHistoryManagerTest {
     void shouldNotDuplicateSameTask() {
         history.add(task1);
         history.add(task2);
-        history.add(task1); // повторное добавление
+        history.add(task1);
 
         List<Task> result = history.getHistory();
 
@@ -117,8 +117,8 @@ class InMemoryHistoryManagerTest {
         history.add(task1);
         history.add(task2);
         history.add(task3);
-        history.add(task1); // повторное добавление
-        history.remove(2);  // удаляем среднюю
+        history.add(task1);
+        history.remove(2);
 
         List<Task> result = history.getHistory();
 

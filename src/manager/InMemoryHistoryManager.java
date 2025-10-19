@@ -5,15 +5,15 @@ import model.Task;
 import java.util.*;
 
 /**
- * Реализация менеджера истории просмотров задач с помощью двусвязного списка и HashMap.
- * Обеспечивает удаление дубликатов и операции O(1) для add/remove.
+  Реализация менеджера истории просмотров задач с помощью двусвязного списка и HashMap.
+  Обеспечивает удаление дубликатов и операции O(1) для add/remove.
  */
 public class InMemoryHistoryManager implements HistoryManager {
 
-    // Хэш-таблица: id задачи → узел связного списка
+
     private final Map<Integer, Node> nodeMap = new HashMap<>();
 
-    // Голова и хвост списка
+
     private Node head;
     private Node tail;
 
@@ -33,8 +33,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     /**
-     * Добавляет задачу в конец истории.
-     * Если такая задача уже есть — удаляет старую запись.
+      Добавляет задачу в конец истории.
+      Если такая задача уже есть — удаляет старую запись.
      */
     @Override
     public void add(Task task) {
@@ -47,7 +47,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(nodeMap.get(id));
         }
 
-        // Создаём новый узел и добавляем его в конец
+
         Node newNode = linkLast(task);
 
         // Запоминаем его в HashMap
