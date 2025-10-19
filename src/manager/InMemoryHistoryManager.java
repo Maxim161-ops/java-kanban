@@ -18,7 +18,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node tail;
 
 
-     // Узел двусвязного списка, хранящий задачу.
+    // Узел двусвязного списка, хранящий задачу.
 
     private static class Node {
         Task task;
@@ -55,7 +55,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
 
-     // Удаляет задачу по её id.
+    // Удаляет задачу по её id.
 
     @Override
     public void remove(int id) {
@@ -66,7 +66,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
 
-     // Возвращает историю просмотров задач в виде списка.
+    // Возвращает историю просмотров задач в виде списка.
 
     @Override
     public List<Task> getHistory() {
