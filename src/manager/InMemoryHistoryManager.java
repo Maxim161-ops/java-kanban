@@ -1,25 +1,121 @@
 package manager;
 
 import model.Task;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
+import java.util.*;
+
+/**
+ * Реализация менеджера истории просмотров задач с помощью двусвязного списка и HashMap.
+ * Обеспечивает удаление дубликатов и операции O(1) для add/remove.
+ */
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int MAX_HISTORY_SIZE = 10;
-    private final LinkedList<Task> history = new LinkedList<>();
 
-    @Override
-    public void add(Task task) {
-        if (task == null) return;
-        history.add(task);
-        if (history.size() > MAX_HISTORY_SIZE) {
-            history.removeFirst();
+    // Хэш-таблица: id задачи → узел связного списка
+    private final Map<Integer, Node> nodeMap = new HashMap<>();
+
+    // Голова и хвост списка
+    private Node head;
+    private Node tail;
+
+
+     // Узел двусвязного списка, хранящий задачу.
+
+    private static class Node {
+        Task task;
+        Node prev;
+        Node next;
+
+        Node(Node prev, Task task, Node next) {
+            this.task = task;
+            this.prev = prev;
+            this.next = next;
         }
     }
 
+    /**
+     * Добавляет задачу в конец истории.
+     * Если такая задача уже есть — удаляет старую запись.
+     */
+    @Override
+    public void add(Task task) {
+        if (task == null) return;
+
+        int id = task.getId();
+
+        // Удаляем предыдущий просмотр, если есть
+        if (nodeMap.containsKey(id)) {
+            removeNode(nodeMap.get(id));
+        }
+
+        // Создаём новый узел и добавляем его в конец
+        Node newNode = linkLast(task);
+
+        // Запоминаем его в HashMap
+        nodeMap.put(id, newNode);
+    }
+
+
+     // Удаляет задачу по её id.
+
+    @Override
+    public void remove(int id) {
+        Node node = nodeMap.remove(id);
+        if (node != null) {
+            removeNode(node);
+        }
+    }
+
+
+     // Возвращает историю просмотров задач в виде списка.
+
     @Override
     public List<Task> getHistory() {
-        return new ArrayList<>(history);
+        List<Task> history = new ArrayList<>();
+        Node current = head;
+        while (current != null) {
+            history.add(current.task);
+            current = current.next;
+        }
+        return history;
+    }
+
+
+    //Добавляет задачу в конец двусвязного списка.
+
+    private Node linkLast(Task task) {
+        Node oldTail = tail;
+        Node newNode = new Node(oldTail, task, null);
+        tail = newNode;
+        if (oldTail == null) {
+            head = newNode;
+        } else {
+            oldTail.next = newNode;
+        }
+        return newNode;
+    }
+
+
+    //Удаляет узел из двусвязного списка.
+
+    private void removeNode(Node node) {
+        if (node == null) return;
+
+        Node prev = node.prev;
+        Node next = node.next;
+
+        if (prev != null) {
+            prev.next = next;
+        } else {
+            head = next;
+        }
+
+        if (next != null) {
+            next.prev = prev;
+        } else {
+            tail = prev;
+        }
+
+        node.prev = null;
+        node.next = null;
     }
 }
