@@ -83,7 +83,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     //Добавляет задачу в конец двусвязного списка.
 
     private Node linkLast(Task task) {
-        Node oldTail = tail;
+        final Node oldTail = tail;
         Node newNode = new Node(oldTail, task, null);
         tail = newNode;
         if (oldTail == null) {
@@ -114,8 +114,5 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             tail = prev;
         }
-
-        node.prev = null;
-        node.next = null;
     }
 }
