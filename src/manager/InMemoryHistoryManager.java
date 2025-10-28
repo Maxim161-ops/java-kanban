@@ -4,10 +4,7 @@ import model.Task;
 
 import java.util.*;
 
-/**
-  Реализация менеджера истории просмотров задач с помощью двусвязного списка и HashMap.
-  Обеспечивает удаление дубликатов и операции O(1) для add/remove.
- */
+
 public class InMemoryHistoryManager implements HistoryManager {
 
 
