@@ -6,8 +6,14 @@ import java.util.List;
 public class Epic extends Task {
     private final List<Integer> subtaskIds = new ArrayList<>();
 
+    /// Конструктор по умолчанию (создаёт эпик со статусом NEW)
     public Epic(String title, String description) {
         super(title, description, Status.NEW);
+    }
+
+    //конструктор для загрузки из файла (принимает статус)
+    public Epic(String title, String description, Status status) {
+        super(title, description, status);
     }
 
     public List<Integer> getSubtaskIds() {
