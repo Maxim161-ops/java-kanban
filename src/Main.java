@@ -1,13 +1,14 @@
-import manager.TaskManager;
+import manager.FileBackedTaskManager;
 import model.Task;
 import model.Epic;
 import model.Subtask;
 import model.Status;
-import manager.Managers;
+import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefaultTaskManager();
+        File file = new File("tasks.csv");
+        FileBackedTaskManager manager = new FileBackedTaskManager(file);
 
         Task task1 = new Task("Переезд", "Собрать вещи и перевезти", Status.NEW);
         Task task2 = new Task("Учёба", "Сделать проект по Java", Status.NEW);
@@ -22,14 +23,17 @@ public class Main {
         manager.addSubtask(sub1);
         manager.addSubtask(sub2);
 
-        manager.getTask(task1.getId());
-        manager.getEpic(epic1.getId());
-        manager.getSubtask(sub1.getId());
-
+        // Выводим всё, что сейчас в памяти
+        System.out.println("=== Текущее состояние менеджера ===");
         printAllTasks(manager);
+
+        // Проверяем восстановление из файла
+        System.out.println("\n=== Восстановление из файла ===");
+        FileBackedTaskManager restored = FileBackedTaskManager.loadFromFile(file);
+        printAllTasks(restored);
     }
 
-    private static void printAllTasks(TaskManager manager) {
+    private static void printAllTasks(FileBackedTaskManager manager) {
         System.out.println("Задачи:");
         for (Task task : manager.getAllTasks()) System.out.println(task);
 
@@ -43,8 +47,5 @@ public class Main {
 
         System.out.println("Подзадачи:");
         for (Subtask subtask : manager.getAllSubtasks()) System.out.println(subtask);
-
-        System.out.println("История:");
-        for (Task task : manager.getHistory()) System.out.println(task);
     }
 }

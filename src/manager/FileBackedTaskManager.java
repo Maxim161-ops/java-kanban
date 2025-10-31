@@ -58,14 +58,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
                 // В зависимости от типа задачи добавляем в нужный список
                 if (task instanceof Epic) {
-                    manager.addEpic((Epic) task);
+                    manager.restoreEpic((Epic) task);
                 } else if (task instanceof Subtask) {
-                    manager.addSubtask((Subtask) task);
+                    manager.restoreSubtask((Subtask) task);
                 } else {
-                    manager.addTask(task);
+                    manager.restoreTask(task);
                 }
             }
-
+            for (Subtask subtask : manager.getAllSubtasks()) {
+                Epic epic = manager.getEpic(subtask.getEpicId());
+                if (epic != null) {
+                    epic.addSubtaskId(subtask.getId());
+                }
+            }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при чтении файла", e);
         }
@@ -89,7 +94,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 return task;
 
             case "EPIC":
-                Epic epic = new Epic(title, description, Status.valueOf(status));
+                Epic epic = new Epic(title, description);
+                epic.setStatus(Status.valueOf(status));    // вручную ставим статус
                 epic.setId(id);
                 return epic;
 
@@ -103,6 +109,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 return null;
         }
     }
+
+    protected void restoreTask(Task task) {
+        tasks.put(task.getId(), task);
+        updateNextId(task.getId());
+    }
+
+    protected void restoreEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+        updateNextId(epic.getId());
+    }
+
+    protected void restoreSubtask(Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
+        updateNextId(subtask.getId());
+    }
+    protected void updateNextId(int id) {
+        if (id >= nextId) {
+            nextId = id + 1;
+        }
+    }
+
 
     private String taskToString(Task task) {
         return task.getId() + "," +
