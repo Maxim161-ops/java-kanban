@@ -124,6 +124,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         subtasks.put(subtask.getId(), subtask);
         updateNextId(subtask.getId());
     }
+
     protected void updateNextId(int id) {
         if (id >= nextId) {
             nextId = id + 1;
