@@ -9,8 +9,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
 
     private final Map<Integer, Node> nodeMap = new HashMap<>();
-
-
     private Node head;
     private Node tail;
 
@@ -33,47 +31,47 @@ public class InMemoryHistoryManager implements HistoryManager {
       Добавляет задачу в конец истории.
       Если такая задача уже есть — удаляет старую запись.
      */
+
     @Override
     public void add(Task task) {
         if (task == null) return;
 
-        int id = task.getId();
-
-        // Удаляем предыдущий просмотр, если есть
-        if (nodeMap.containsKey(id)) {
-            removeNode(nodeMap.get(id));
+        // Если задача уже есть в истории, удаляем старый узел
+        if (nodeMap.containsKey(task.getId())) {
+            removeNode(nodeMap.get(task.getId()));
         }
 
-
+        // Добавляем новую задачу в конец списка
         Node newNode = linkLast(task);
 
-        // Запоминаем его в HashMap
-        nodeMap.put(id, newNode);
+        // Сохраняем узел в HashMap по id задачи
+        nodeMap.put(task.getId(), newNode);
     }
-
-
-    // Удаляет задачу по её id.
 
     @Override
     public void remove(int id) {
         Node node = nodeMap.remove(id);
-        if (node != null) {
-            removeNode(node);
-        }
+        if (node == null) return;
+
+        Node prev = node.prev;
+        Node next = node.next;
+
+        if (prev != null) prev.next = next;
+        else head = next;
+
+        if (next != null) next.prev = prev;
+        else tail = prev;
     }
-
-
-    // Возвращает историю просмотров задач в виде списка.
 
     @Override
     public List<Task> getHistory() {
-        List<Task> history = new ArrayList<>();
+        List<Task> result = new ArrayList<>();
         Node current = head;
         while (current != null) {
-            history.add(current.task);
+            result.add(current.task);
             current = current.next;
         }
-        return history;
+        return result;
     }
 
 
@@ -90,7 +88,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         return newNode;
     }
-
 
     //Удаляет узел из двусвязного списка.
 
