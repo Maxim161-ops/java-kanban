@@ -16,12 +16,6 @@ public class Subtask extends Task {
     }
 
     @Override
-    public LocalDateTime getEndTime() {
-        if (startTime == null || duration == null) return null;
-        return startTime.plus(duration);
-    }
-
-    @Override
     public String toString() {
         return "Subtask{" +
                 "id=" + id +

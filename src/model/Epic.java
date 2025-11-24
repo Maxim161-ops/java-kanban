@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Epic extends Task {
     private final List<Integer> subtaskIds = new ArrayList<>();
+    private LocalDateTime endTime;
 
     /// Конструктор по умолчанию (создаёт эпик со статусом NEW)
     public Epic(String title, String description) {
@@ -23,6 +24,14 @@ public class Epic extends Task {
         return new ArrayList<>(subtaskIds);
     }
 
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     public void addSubtaskId(int id) {
         subtaskIds.add(id);
     }
@@ -33,55 +42,5 @@ public class Epic extends Task {
 
     public void removeSubtaskId(int id) {
         subtaskIds.remove((Integer) id);
-    }
-
-    /**
-     * Обновляет duration и startTime эпика на основе всех его подзадач.
-     * Duration — сумма всех подзадач.
-     * startTime — самое раннее время начала.
-     * endTime — время окончания последней подзадачи.
-     */
-
-    public void updateTimeAndDuration(Map<Integer, Subtask> subtaskMap) {
-        if (subtaskIds.isEmpty()) {
-            this.duration = Duration.ZERO;
-            this.startTime = null;
-            return;
-        }
-
-        Duration totalDuration = Duration.ZERO;
-        LocalDateTime earliest = null;
-        LocalDateTime latest = null;
-
-        for (int subId : subtaskIds) {
-            Subtask sub = subtaskMap.get(subId);  // <- здесь используем переданную карту
-            if (sub == null || sub.getStartTime() == null || sub.getDuration() == null) continue;
-
-            totalDuration = totalDuration.plus(sub.getDuration());
-
-            if (earliest == null || sub.getStartTime().isBefore(earliest)) {
-                earliest = sub.getStartTime();
-            }
-            if (latest == null || sub.getEndTime().isAfter(latest)) {
-                latest = sub.getEndTime();
-            }
-        }
-
-        this.duration = totalDuration;
-        this.startTime = earliest;
-    }
-
-    @Override
-    public String toString() {
-        return "Epic{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", duration=" + (duration != null ? duration.toMinutes() + "min" : "null") +
-                ", startTime=" + startTime +
-                ", endTime=" + getEndTime() +
-                ", subtaskIds=" + subtaskIds +
-                '}';
     }
 }
