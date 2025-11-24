@@ -112,10 +112,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 manager.prioritizedTasks.add(subtask);
             }
 
-            // Пересчитываем эпики
             for (Epic epic : manager.getAllEpics()) {
-                epic.updateTimeAndDuration(manager.subtasks);
-                manager.updateEpicStatus(epic);
+                manager.updateEpicTime(epic);    // пересчитываем время эпика
+                manager.updateEpicStatus(epic);  // пересчитываем статус эпика
             }
 
         } catch (IOException e) {
