@@ -40,15 +40,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Проверка пересечений новой задачи с существующими
-    private boolean checkIntersections(Task newTask) {
-        if (newTask.getStartTime() == null || newTask.getEndTime() == null) return true; // если времени нет, пересечения нет
+    private void checkIntersections(Task newTask) {
+        if (newTask.getStartTime() == null || newTask.getEndTime() == null) return; // если времени нет, пересечения нет
+
         for (Task existing : prioritizedTasks) {
             if (existing.getId() == newTask.getId()) continue;
             if (isIntersect(existing, newTask)) {
-                return false; // есть пересечение
+                throw new IllegalArgumentException(
+                        "Задача '" + newTask.getTitle() + "' пересекается с задачей '" + existing.getTitle() + "' по времени"
+                );
             }
         }
-        return true; // пересечений нет
     }
 
     // ------------------------- ADD -------------------------
