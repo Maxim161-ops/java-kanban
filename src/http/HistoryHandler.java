@@ -3,21 +3,17 @@ package http;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import manager.InMemoryTaskManager;
 import manager.TaskManager;
-import model.Task;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
+public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
 
-    private final InMemoryTaskManager manager;
+    private final TaskManager manager;
     private final Gson gson;
 
-    public PrioritizedHandler(TaskManager manager, Gson gson) {
-        this.manager = (InMemoryTaskManager) manager;
+    public HistoryHandler(TaskManager manager, Gson gson) {
+        this.manager = manager;
         this.gson = gson;
     }
 
@@ -29,8 +25,7 @@ public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
 
-            List<Task> sorted = manager.getPrioritizedTasks();
-            sendText(h, gson.toJson(sorted));
+            sendText(h, gson.toJson(manager.getHistory()));
 
         } catch (Exception e) {
             sendServerError(h, e.getMessage());
