@@ -25,59 +25,65 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             String method = h.getRequestMethod();
             String query = h.getRequestURI().getQuery();
 
-            if (method.equals("GET")) {
-                if (query == null) {
-                    List<Subtask> all = manager.getAllSubtasks();
-                    sendText(h, gson.toJson(all));
-                } else {
-                    int id = Integer.parseInt(query.split("=")[1]);
-                    Subtask sub = manager.getSubtask(id);
-                    if (sub == null) { sendNotFound(h);
-                        return;
+            switch (method) {
+                case "GET" -> {
+                    if (query == null) {
+                        List<Subtask> all = manager.getAllSubtasks();
+                        sendText(h, gson.toJson(all));
+                    } else {
+                        int id = Integer.parseInt(query.split("=")[1]);
+                        Subtask sub = manager.getSubtask(id);
+                        if (sub == null) {
+                            sendNotFound(h);
+                            return;
+                        }
+                        sendText(h, gson.toJson(sub));
+
                     }
-                    sendText(h, gson.toJson(sub));
+                    return;
                 }
-                return;
-            }
+                case "POST" -> {
+                    String body = readBody(h);
+                    Subtask sub = gson.fromJson(body, Subtask.class);
 
-            if (method.equals("POST")) {
-                String body = readBody(h);
-                Subtask sub = gson.fromJson(body, Subtask.class);
+                    if (sub.getId() == 0) {
+                        try {
+                            manager.addSubtask(sub);
+                            sendCreated(h);
+                        } catch (IllegalArgumentException e) {
+                            sendHasOverlaps(h);
+                        }
+                    } else {
+                        try {
+                            boolean ok = manager.updateSubtask(sub);
 
-                if (sub.getId() == 0) {
-                    try {
-                        manager.addSubtask(sub);
-                        sendCreated(h);
-                    } catch (IllegalArgumentException e) {
-                        sendHasOverlaps(h);
+                            if (!ok) {
+                                sendNotFound(h);
+                                return;
+                            }
+                            sendCreated(h);
+                        } catch (IllegalArgumentException e) {
+                            sendHasOverlaps(h);
+                        }
                     }
-                } else {
-                    try {
-                        boolean ok = manager.updateSubtask(sub);
-                        if (!ok) { sendNotFound(h);
+                    return;
+                }
+                case "DELETE" -> {
+                    if (query == null) {
+                        manager.deleteAllSubtasks();
+                        sendCreated(h);
+                    } else {
+                        int id = Integer.parseInt(query.split("=")[1]);
+                        boolean ok = manager.deleteSubtaskById(id);
+                        if (!ok) {
+                            sendNotFound(h);
                             return;
                         }
                         sendCreated(h);
-                    } catch (IllegalArgumentException e) {
-                        sendHasOverlaps(h);
                     }
                 }
-                return;
             }
 
-            if (method.equals("DELETE")) {
-                if (query == null) {
-                    manager.deleteAllSubtasks();
-                    sendCreated(h);
-                } else {
-                    int id = Integer.parseInt(query.split("=")[1]);
-                    boolean ok = manager.deleteSubtaskById(id);
-                    if (!ok) { sendNotFound(h);
-                        return;
-                    }
-                    sendCreated(h);
-                }
-            }
         } catch (Exception e) {
             sendServerError(h, e.getMessage());
         }
