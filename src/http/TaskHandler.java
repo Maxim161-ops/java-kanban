@@ -33,7 +33,8 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 } else {
                     int id = Integer.parseInt(query.split("=")[1]);
                     Task t = manager.getTask(id);
-                    if (t == null) {
+                    if (t == null)
+                    {
                         sendNotFound(h);
                     } else {
                         sendText(h, gson.toJson(t));
