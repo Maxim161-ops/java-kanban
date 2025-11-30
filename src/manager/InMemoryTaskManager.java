@@ -41,7 +41,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // Проверка пересечений новой задачи с существующими
     private void checkIntersections(Task newTask) {
-        if (newTask.getStartTime() == null || newTask.getEndTime() == null) return; 
+        if (newTask.getStartTime() == null || newTask.getEndTime() == null) return;
 
         for (Task existing : prioritizedTasks) {
             if (existing.getId() == newTask.getId()) continue;
