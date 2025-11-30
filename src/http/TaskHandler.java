@@ -26,61 +26,60 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             String path = h.getRequestURI().getPath();
             String query = h.getRequestURI().getQuery();
 
-            if (method.equals("GET")) {
-                if (query == null) {
-                    List<Task> tasks = manager.getAllTasks();
-                    sendText(h, gson.toJson(tasks));
-                } else {
-                    int id = Integer.parseInt(query.split("=")[1]);
-                    Task t = manager.getTask(id);
-                    if (t == null)
-                    {
-                        sendNotFound(h);
+            switch (method) {
+                case "GET" -> {
+                    if (query == null) {
+                        List<Task> tasks = manager.getAllTasks();
+                        sendText(h, gson.toJson(tasks));
                     } else {
-                        sendText(h, gson.toJson(t));
+                        int id = Integer.parseInt(query.split("=")[1]);
+                        Task t = manager.getTask(id);
+                        if (t == null) {
+                            sendNotFound(h);
+                        } else {
+                            sendText(h, gson.toJson(t));
+                        }
                     }
+                    return;
                 }
-                return;
-            }
+                case "POST" -> {
+                    String body = readBody(h);
+                    Task task = gson.fromJson(body, Task.class);
 
-            if (method.equals("POST")) {
-                String body = readBody(h);
-                Task task = gson.fromJson(body, Task.class);
+                    if (task.getId() == 0) {
+                        try {
+                            manager.addTask(task);
+                            sendCreated(h);
+                        } catch (IllegalArgumentException e) {
+                            sendHasOverlaps(h);
+                        }
+                    } else {
+                        try {
+                            boolean ok = manager.updateTask(task);
+                            if (!ok) {
+                                sendNotFound(h);
+                                return;
+                            }
 
-                if (task.getId() == 0) {
-                    try {
-                        manager.addTask(task);
-                        sendCreated(h);
-                    } catch (IllegalArgumentException e) {
-                        sendHasOverlaps(h);
+                            sendCreated(h);
+                        } catch (IllegalArgumentException e) {
+                            sendHasOverlaps(h);
+                        }
                     }
-                } else {
-                    try {
-                        boolean ok = manager.updateTask(task);
+                    return;
+                }
+                case "DELETE" -> {
+                    if (query == null) {
+                        manager.deleteAllTasks();
+                        sendCreated(h);
+                    } else {
+                        int id = Integer.parseInt(query.split("=")[1]);
+                        boolean ok = manager.deleteTaskById(id);
                         if (!ok) {
                             sendNotFound(h);
-                            return;
+                        } else {
+                            sendCreated(h);
                         }
-
-                        sendCreated(h);
-                    } catch (IllegalArgumentException e) {
-                        sendHasOverlaps(h);
-                    }
-                }
-                return;
-            }
-
-            if (method.equals("DELETE")) {
-                if (query == null) {
-                    manager.deleteAllTasks();
-                    sendCreated(h);
-                } else {
-                    int id = Integer.parseInt(query.split("=")[1]);
-                    boolean ok = manager.deleteTaskById(id);
-                    if (!ok) {
-                        sendNotFound(h);
-                    } else {
-                        sendCreated(h);
                     }
                 }
             }
