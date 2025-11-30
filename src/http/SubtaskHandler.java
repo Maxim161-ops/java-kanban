@@ -32,7 +32,9 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                 } else {
                     int id = Integer.parseInt(query.split("=")[1]);
                     Subtask sub = manager.getSubtask(id);
-                    if (sub == null) { sendNotFound(h); return; }
+                    if (sub == null) { sendNotFound(h);
+                        return;
+                    }
                     sendText(h, gson.toJson(sub));
                 }
                 return;
@@ -52,7 +54,9 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                 } else {
                     try {
                         boolean ok = manager.updateSubtask(sub);
-                        if (!ok) { sendNotFound(h); return; }
+                        if (!ok) { sendNotFound(h);
+                            return;
+                        }
                         sendCreated(h);
                     } catch (IllegalArgumentException e) {
                         sendHasOverlaps(h);
@@ -68,7 +72,9 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                 } else {
                     int id = Integer.parseInt(query.split("=")[1]);
                     boolean ok = manager.deleteSubtaskById(id);
-                    if (!ok) { sendNotFound(h); return; }
+                    if (!ok) { sendNotFound(h);
+                        return;
+                    }
                     sendCreated(h);
                 }
             }
