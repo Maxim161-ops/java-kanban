@@ -89,21 +89,22 @@ class HttpHandlersTest {
 
         List<Task> history = manager.getHistory();
         assertEquals(1, history.size());
-        assertEquals("TaskHistory", history.get(0).getTitle());  // поле напрямую
+        assertEquals("TaskHistory", history.getFirst().getTitle());  // поле напрямую
     }
 
-    // ---------------- PrioritizedHandler ----------------
     @Test
     void prioritizedHandlerSortsTasks() {
-        Task task1 = new Task("A", "Desc1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.now().plusMinutes(10));
+        // task1 стартует позже
+        Task task1 = new Task("A", "Desc1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.now().plusMinutes(20));
         manager.addTask(task1);
 
-        Task task2 = new Task("B", "Desc2", Status.NEW, Duration.ofMinutes(5), LocalDateTime.now().plusMinutes(5));
+        // task2 стартует раньше
+        Task task2 = new Task("B", "Desc2", Status.NEW, Duration.ofMinutes(5), LocalDateTime.now().plusMinutes(10));
         manager.addTask(task2);
 
         List<Task> prioritized = manager.getPrioritizedTasks();
         assertEquals(2, prioritized.size());
-        assertEquals("B", prioritized.get(0).getTitle());  // поле напрямую
-        assertEquals("A", prioritized.get(1).getTitle());  // поле напрямую
+        assertEquals("B", prioritized.get(0).getTitle());
+        assertEquals("A", prioritized.get(1).getTitle());
     }
 }
