@@ -56,7 +56,11 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 } else {
                     try {
                         boolean ok = manager.updateTask(task);
-                        if (!ok) { sendNotFound(h); return; }
+                        if (!ok) {
+                            sendNotFound(h);
+                            return;
+                        }
+
                         sendCreated(h);
                     } catch (IllegalArgumentException e) {
                         sendHasOverlaps(h);
