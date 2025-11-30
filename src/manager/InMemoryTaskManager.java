@@ -1,9 +1,9 @@
 package manager;
 
-import model.Task;
 import model.Epic;
-import model.Subtask;
 import model.Status;
+import model.Subtask;
+import model.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

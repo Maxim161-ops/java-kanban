@@ -1,7 +1,10 @@
 package tracker;
 
 import manager.InMemoryTaskManager;
-import model.*;
+import model.Epic;
+import model.Status;
+import model.Subtask;
+import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

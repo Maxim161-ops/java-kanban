@@ -8,7 +8,6 @@ import manager.TaskManager;
 import model.Task;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
