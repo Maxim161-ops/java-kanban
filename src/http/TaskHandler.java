@@ -48,8 +48,9 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
                     if (task.getId() == 0) {
                         try {
-                            manager.addTask(task);
-                            sendCreated(h);
+                            int newId = manager.addTask(task);
+
+                            sendText(h, "{\"id\":" + newId + "}");
                         } catch (IllegalArgumentException e) {
                             sendHasOverlaps(h);
                         }
@@ -60,7 +61,8 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                                 sendNotFound(h);
                                 return;
                             }
-                            sendCreated(h);
+                            int id = task.getId();
+                            sendText(h, "{\"id\":" + id + "}");
                         } catch (IllegalArgumentException e) {
                             sendHasOverlaps(h);
                         }
@@ -80,12 +82,10 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                             sendCreated(h);
                         }
                     }
-                    return;
                 }
             }
         } catch (Exception e) {
             sendServerError(h, e.getMessage());
         }
     }
-
 }

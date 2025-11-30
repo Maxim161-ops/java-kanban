@@ -48,24 +48,23 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                         }
                         sendText(h, gson.toJson(epic));
                     }
-                    return;
                 }
                 case "POST" -> {
                     String body = readBody(h);
                     Epic epic = gson.fromJson(body, Epic.class);
 
                     if (epic.getId() == 0) {
-                        manager.addEpic(epic);
-                        sendCreated(h);
+                        int id = manager.addEpic(epic);
+                        sendText(h, "{\"id\":" + id + "}");
                     } else {
                         boolean ok = manager.updateEpic(epic);
                         if (!ok) {
                             sendNotFound(h);
                             return;
                         }
-                        sendCreated(h);
+                        int id = epic.getId();
+                        sendText(h, "{\"id\":" + id + "}");
                     }
-                    return;
                 }
                 case "DELETE" -> {
                     if (query == null) {

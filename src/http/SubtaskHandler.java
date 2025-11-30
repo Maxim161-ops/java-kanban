@@ -40,7 +40,6 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                         sendText(h, gson.toJson(sub));
 
                     }
-                    return;
                 }
                 case "POST" -> {
                     String body = readBody(h);
@@ -48,8 +47,15 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
 
                     if (sub.getId() == 0) {
                         try {
-                            manager.addSubtask(sub);
-                            sendCreated(h);
+                            int newId = manager.addSubtask(sub);
+
+                            if (newId == -1) {
+                                // Ошибка: эпик не найден или subtaskId == epicId
+                                sendNotFound(h);
+                                return;
+                            }
+                            // Возвращаем id в ответе
+                            sendText(h, "{\"id\":" + newId + "}");
                         } catch (IllegalArgumentException e) {
                             sendHasOverlaps(h);
                         }
@@ -61,12 +67,12 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                                 sendNotFound(h);
                                 return;
                             }
-                            sendCreated(h);
+                            int id = sub.getId();
+                            sendText(h, "{\"id\":" + id + "}");
                         } catch (IllegalArgumentException e) {
                             sendHasOverlaps(h);
                         }
                     }
-                    return;
                 }
                 case "DELETE" -> {
                     if (query == null) {
